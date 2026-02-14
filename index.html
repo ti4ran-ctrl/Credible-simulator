@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
@@ -16,7 +16,13 @@
             font-family: 'Heebo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
-        html, body {
+        html {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        body {
             font-family: 'Heebo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             position: fixed;
             width: 100%;
@@ -31,7 +37,12 @@
             left: 0;
             right: 0;
             bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
@@ -48,19 +59,21 @@
         input {
             font-size: 17px !important;
         }
-        @supports (height: 100dvh) {
-            #app {
-                height: 100dvh;
-            }
+        /* Prevent any scrolling on iOS */
+        .content-wrapper {
+            position: relative;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            flex: 1;
         }
     </style>
 </head>
 <body class="bg-[#1e293b] text-white">
-    <div id="app" class="flex flex-col" style="padding-top: env(safe-area-inset-top);">
+    <div id="app" style="padding-top: env(safe-area-inset-top);">
         
-        <!-- Logo -->
-        <div class="w-full flex justify-center pt-4 pb-2 shrink-0">
-            <svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 301.68 65.71" class="h-8 w-auto">
+        <!-- Logo - Larger -->
+        <div class="w-full flex justify-center pt-5 pb-3 shrink-0">
+            <svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 301.68 65.71" class="h-10 w-auto">
                 <defs>
                     <linearGradient id="linear-gradient" x1="209.98" y1="58.62" x2="301.68" y2="58.62" gradientUnits="userSpaceOnUse">
                         <stop offset="0" stop-color="#f6d19c"/><stop offset=".36" stop-color="#d4a55f"/><stop offset=".69" stop-color="#c89644"/><stop offset="1" stop-color="#9c7229"/>
@@ -79,7 +92,7 @@
         </div>
 
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col px-5 pt-4 overflow-y-auto pb-4" style="overflow-y: auto; -webkit-overflow-scrolling: touch;">
+        <div class="content-wrapper px-5 pt-4 pb-4">
             <div class="flex flex-col gap-3 w-full max-w-md mx-auto">
 
                 <div class="grid grid-cols-2 gap-3">
@@ -159,16 +172,31 @@
         let track='prime';
         const inputFields = ['loanAmount', 'balloonAmount', 'months', 'primeRate', 'margin'];
         
-        function preventViewportResize() {
-            const inputs = document.querySelectorAll('input');
-            inputs.forEach(input => {
-                input.addEventListener('focus', () => {
-                    setTimeout(() => {
-                        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 300);
-                });
+        // Lock the viewport to prevent keyboard resize
+        const appElement = document.getElementById('app');
+        const initialHeight = window.innerHeight;
+        
+        // Set fixed height on app
+        appElement.style.height = initialHeight + 'px';
+        
+        // Prevent resize on keyboard open
+        window.addEventListener('resize', function() {
+            appElement.style.height = initialHeight + 'px';
+        });
+        
+        // Smooth scroll to focused input
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                setTimeout(() => {
+                    const wrapper = document.querySelector('.content-wrapper');
+                    const inputRect = input.getBoundingClientRect();
+                    const wrapperRect = wrapper.getBoundingClientRect();
+                    const scrollTop = inputRect.top - wrapperRect.top + wrapper.scrollTop - (wrapperRect.height / 2) + (inputRect.height / 2);
+                    wrapper.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                }, 300);
             });
-        }
+        });
         
         function loadSavedValues(){
             const a=localStorage.getItem('primeRate'),b=localStorage.getItem('margin');
@@ -249,7 +277,6 @@
         
         setupFormattedInput('loanAmount'),setupFormattedInput('balloonAmount'),setupLocalStorage('primeRate','primeRate'),setupLocalStorage('margin','margin'),
         ['loanAmount','balloonAmount','months','primeRate','margin','indexInterest'].forEach(a=>{document.getElementById(a).addEventListener('input',calculate)}),
-        preventViewportResize(),
         loadSavedValues(),
         calculate();
     </script>
