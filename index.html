@@ -48,7 +48,6 @@
         input {
             font-size: 17px !important;
         }
-        /* Prevent viewport resize on keyboard */
         @supports (height: 100dvh) {
             #app {
                 height: 100dvh;
@@ -96,12 +95,12 @@
                     <div class="bg-[#2d3a4d] rounded-2xl px-4 py-4 min-h-[62px] flex items-center">
                         <input type="number" inputmode="numeric" id="months" value="60" class="w-full bg-transparent outline-none text-[17px] text-white text-center"/>
                     </div>
-                    <div id="trackToggle" class="bg-[#2d3a4d] rounded-2xl px-4 py-4 min-h-[62px] flex items-center justify-between cursor-pointer active:bg-[#354254] transition-colors">
-                        <div class="flex flex-col gap-[3px]">
+                    <div id="trackToggle" class="bg-[#2d3a4d] rounded-2xl px-4 py-4 min-h-[62px] flex items-center justify-center cursor-pointer active:bg-[#354254] transition-colors relative">
+                        <span id="trackLabel" class="text-[17px] text-white text-center">צמוד פריים</span>
+                        <div class="absolute left-4 flex flex-col gap-[3px]">
                             <div class="w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[6px] border-b-gray-400"></div>
                             <div class="w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[6px] border-t-gray-400"></div>
                         </div>
-                        <span id="trackLabel" class="text-[17px] text-white">צמוד פריים</span>
                     </div>
                 </div>
 
@@ -160,14 +159,10 @@
         let track='prime';
         const inputFields = ['loanAmount', 'balloonAmount', 'months', 'primeRate', 'margin'];
         
-        // Prevent viewport resize on keyboard open
-        const viewport = document.querySelector('meta[name=viewport]');
-        
         function preventViewportResize() {
             const inputs = document.querySelectorAll('input');
             inputs.forEach(input => {
                 input.addEventListener('focus', () => {
-                    // Scroll input into view smoothly
                     setTimeout(() => {
                         input.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }, 300);
