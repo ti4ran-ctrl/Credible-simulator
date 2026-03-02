@@ -122,6 +122,14 @@
         .weight-normal { font-weight: 400; }
         .weight-bold { font-weight: 700; }
 
+        .comparison-box {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid #c48c3d;
+            border-radius: 16px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
         .legal-footer {
             margin-top: 24px;
             padding: 16px;
@@ -138,7 +146,7 @@
         
         <!-- Logo -->
         <div class="logo-container">
-            <svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 301.68 65.71">
+            <svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 301.68 65.71">
                 <defs>
                   <style>.cls-1{fill:url(#linear-gradient-2);}.cls-2{fill:#fff;}.cls-3{fill:url(#linear-gradient-6);}.cls-4{fill:url(#linear-gradient-5);}.cls-5{fill:url(#linear-gradient-7);}.cls-6{fill:url(#linear-gradient-3);}.cls-7{fill:url(#linear-gradient);}.cls-8{fill:url(#linear-gradient-4);}</style>
                   <linearGradient id="linear-gradient" x1="209.98" y1="58.62" x2="301.68" y2="58.62" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f6d19c"/><stop offset=".36" stop-color="#d4a55f"/><stop offset=".69" stop-color="#c89644"/><stop offset="1" stop-color="#9c7229"/></linearGradient>
@@ -263,8 +271,21 @@
             </div>
         </div>
 
+        <!-- Comparison Calculator (Only for Index-Linked) -->
+        <div id="comparisonBox" class="comparison-box">
+            <div class="text-xs text-slate-400 mb-2 weight-bold">סימולטור השוואת חלופות (צמוד מדד מול פריים)</div>
+            <div class="bg-black/20 p-3 rounded-lg border border-white/5 text-sm leading-relaxed">
+                הלוואה צמודה בריבית של <span class="text-yellow-500 weight-bold" id="compInt">4.4</span>% 
+                <span id="compInfLabel">בתוספת אינפלציה של <span class="text-yellow-500 weight-bold" id="compInf">2</span>%</span>
+                <div class="mt-2 pt-2 border-t border-white/10 text-center">
+                    <span class="opacity-80">שווה ערך למסלול פריים בריבית:</span><br>
+                    <span class="text-lg font-semibold text-white">פריים <span id="primeEquivalent">1.6</span>%</span>
+                </div>
+            </div>
+        </div>
+
         <!-- Bottom Stats Panel -->
-        <div class="bg-white rounded-[28px] p-5 text-slate-800 space-y-4">
+        <div class="bg-white rounded-[28px] p-5 mt-4 text-slate-800 space-y-4">
             <!-- Tabs -->
             <div class="flex bg-slate-100 rounded-xl p-1">
                 <div id="tabData" class="tab-btn tab-active" onclick="switchTab('data')">ניתוח נתונים</div>
@@ -287,7 +308,7 @@
                 <div class="bg-[#0f172a] text-white rounded-2xl p-5 text-center">
                     <div id="costDescription" class="text-slate-400 text-[10px] mb-1">עלות ההלוואה הכוללת (קרן + ריבית + הצמדה)</div>
                     <div class="text-2xl weight-bold mb-1">₪<span id="totalLoanCost">0</span></div>
-                    <div class="text-yellow-500/80 text-[10px]">עלות נוספת מעבר לקרן: <span id="extraCost" class="weight-bold">0</span>₪</div>
+                    <div class="text-yellow-500/80 text-[10px]">עלות נוספת מעבר לקרן: <span id="extraCost" class="weight-bold">0</span> ₪</div>
                 </div>
             </div>
 
@@ -339,6 +360,7 @@
             const linkageBox = document.getElementById('linkageDisplayBox');
             const interestBox = document.getElementById('interestDisplayBox');
             const costDesc = document.getElementById('costDescription');
+            const comparisonBox = document.getElementById('comparisonBox');
             
             if (currentRoute === 'פריים') {
                 routeDisplay.innerText = 'פריים (לא צמודה)';
@@ -348,6 +370,7 @@
                 primeInt.classList.remove('hidden-row');
                 linkageBox.classList.add('hidden-row');
                 interestBox.classList.add('col-span-2');
+                comparisonBox.classList.add('hidden-row'); // Hide comparison for Prime
                 costDesc.innerText = 'עלות ההלוואה הכוללת (קרן + ריבית)';
             } else {
                 routeDisplay.innerText = 'קבועה צמודה';
@@ -357,6 +380,7 @@
                 primeInt.classList.add('hidden-row');
                 linkageBox.classList.remove('hidden-row');
                 interestBox.classList.remove('col-span-2');
+                comparisonBox.classList.remove('hidden-row'); // Show comparison for Index-Linked
                 costDesc.innerText = 'עלות ההלוואה הכוללת (קרן + ריבית + הצמדה)';
             }
             calculate();
@@ -389,23 +413,43 @@
             const p = parseFloat(pStr) || 0;
             const balloon = parseFloat(balloonStr) || 0;
             const n = parseFloat(document.getElementById('period').value) || 0;
+            const primeBaseVal = parseFloat(document.getElementById('primeBase').value) || 0;
             
             let annualRate = 0;
+            let currentInterestRateInput = parseFloat(document.getElementById('interestRate').value) || 0;
+
             if (currentRoute === 'מדד') {
-                annualRate = parseFloat(document.getElementById('interestRate').value) || 0;
+                annualRate = currentInterestRateInput;
             } else {
-                const base = parseFloat(document.getElementById('primeBase').value) || 0;
                 const margin = parseFloat(document.getElementById('primeMargin').value) || 0;
-                annualRate = base + margin;
+                annualRate = primeBaseVal + margin;
             }
 
-            const inflationActive = currentRoute === 'מדד' && document.getElementById('inflationActive').checked;
-            const annualInflation = inflationActive ? parseFloat(document.getElementById('inflationRate').value) || 0 : 0;
+            const inflationRateVal = parseFloat(document.getElementById('inflationRate').value) || 0;
+            const inflationActive = document.getElementById('inflationActive').checked;
+            
+            // Logic for the comparison calculator:
+            const annualInflationForComp = (currentRoute === 'מדד' && inflationActive) ? inflationRateVal : 0;
+            
+            // --- Update UI for the Comparison Box (only if it's visible) ---
+            if (currentRoute === 'מדד') {
+                document.getElementById('compInt').innerText = currentInterestRateInput;
+                if (inflationActive) {
+                    document.getElementById('compInfLabel').style.display = 'inline';
+                    document.getElementById('compInf').innerText = inflationRateVal;
+                } else {
+                    document.getElementById('compInfLabel').style.display = 'none';
+                }
+                
+                const equivalentMargin = (currentInterestRateInput + annualInflationForComp) - primeBaseVal;
+                const marginSign = equivalentMargin >= 0 ? "+" : "";
+                document.getElementById('primeEquivalent').innerText = `${marginSign}${equivalentMargin.toFixed(1)}`;
+            }
 
             if (n <= 0 || p <= 0) return;
 
             const monthlyRate = (annualRate / 100) / 12;
-            const monthlyInflation = (annualInflation / 100) / 12;
+            const monthlyInflation = (annualInflationForComp / 100) / 12;
             const amortizingPrincipal = p - balloon;
 
             let pmt = 0;
@@ -423,17 +467,21 @@
             let lastPmtValue = initialMonthlyPmt;
             let schedule = [];
 
+            const calcInflation = (currentRoute === 'מדד' && inflationActive) ? (inflationRateVal / 100 / 12) : 0;
+
             for (let i = 1; i <= n; i++) {
                 let interestPart = currentBalance * monthlyRate;
                 let currentPmt = pmt + (balloon * monthlyRate);
                 let principalPart = currentPmt - interestPart;
 
-                if (inflationActive) {
-                    const linkageMonth = currentBalance * monthlyInflation;
+                if (calcInflation > 0) {
+                    const linkageMonth = currentBalance * calcInflation;
                     totalLinkagePaid += linkageMonth;
                     currentBalance += linkageMonth;
-                    currentPmt = currentPmt * Math.pow(1 + monthlyInflation, i);
+                    currentPmt = currentPmt * Math.pow(1 + calcInflation, i);
                     lastPmtValue = currentPmt;
+                } else {
+                    lastPmtValue = initialMonthlyPmt;
                 }
 
                 totalInterestPaid += interestPart;
