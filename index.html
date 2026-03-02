@@ -1,37 +1,51 @@
 <!DOCTYPE html>
-
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0f172a">
-    <title>מחשבון הלוואה וליווי אשראי | קרדיבל פלוס</title>
+    <title>מחשבון הלוואה | קרדיבל פלוס</title>
+    
+    <!-- Fonts & Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        *, *::before, *::after { box-sizing: border-box; }
-        html { height: 100%; }
+        :root {
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
+        }
+
+        *, *::before, *::after { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
             font-family: 'Assistant', sans-serif;
             background-color: #0f172a;
             color: white;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            -webkit-tap-highlight-color: transparent;
             min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             overflow-x: hidden;
         }
-        .container {
+
+        .app-shell {
             width: 100%;
-            max-width: 480px;
-            padding: 16px;
-            padding-bottom: 60px;
-            padding-top: max(16px, env(safe-area-inset-top));
+            max-width: 500px;
+            min-height: 100dvh;
+            padding: calc(16px + var(--safe-top)) 16px calc(24px + var(--safe-bottom)) 16px;
+            display: flex;
+            flex-direction: column;
         }
+
+        /* UI Components */
         .card {
             background-color: #1e293b;
             border-radius: 16px;
@@ -39,47 +53,59 @@
             text-align: center;
             border: 1px solid #334155;
             transition: all 0.2s ease;
-            min-height: 80px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            overflow: hidden;
         }
+
         .input-label {
             color: #94a3b8;
             font-size: 0.85rem;
             margin-bottom: 4px;
-            display: block;
             font-weight: 400;
         }
+
         .value-display {
             font-size: 1.4rem;
             font-weight: 600;
-            height: 2rem;
+            background: transparent !important;
+            border: none;
+            color: #ffffff !important;
+            text-align: center;
+            width: 100%;
+            outline: none;
         }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
         .highlight-card {
             background: linear-gradient(135deg, #c48c3d 0%, #a6732e 100%);
             color: white;
             padding: 24px;
         }
+
+        /* Custom Tabs */
         .tab-btn {
             flex: 1;
             padding: 12px;
             text-align: center;
-            font-weight: 400;
             cursor: pointer;
             transition: 0.3s;
+            border-radius: 12px;
         }
         .tab-active {
             background-color: white;
             color: #c48c3d;
-            border-radius: 12px;
             font-weight: 700;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
         }
-        .tab-inactive {
-            color: #94a3b8;
-        }
+        .tab-inactive { color: #94a3b8; }
+
+        /* Custom Switch */
         .switch {
             position: relative;
             display: inline-block;
@@ -107,87 +133,51 @@
         input:checked + .slider { background-color: #c48c3d; }
         input:checked + .slider:before { transform: translateX(20px); }
 
-```
-    input[type="number"], input[type="text"] {
-        background: transparent !important;
-        -webkit-appearance: none;
-        border: none;
-        color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
-        text-align: center;
-        width: 100%;
-        outline: none;
-        font-family: inherit;
-        line-height: 1.2;
-        display: block;
-    }
-    /* Yellow inputs */
-    input.text-yellow-500 {
-        -webkit-text-fill-color: #eab308 !important;
-        color: #eab308 !important;
-    }
-    input:-webkit-autofill,
-    input:-webkit-autofill:hover,
-    input:-webkit-autofill:focus {
-        -webkit-box-shadow: 0 0 0px 1000px #1e293b inset;
-        -webkit-text-fill-color: #ffffff;
-        caret-color: white;
-    }
+        .logo-container {
+            width: 180px;
+            margin: 0 auto 24px auto;
+        }
 
-    .logo-container {
-        width: 200px;
-        margin: 10px auto 25px auto;
-    }
+        .hidden-row { display: none !important; }
 
-    .hidden-row { display: none !important; }
+        .schedule-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border-radius: 12px;
+        }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th { position: sticky; top: 0; background: #f8fafc; padding: 12px 8px; border-bottom: 2px solid #e2e8f0; z-index: 10; color: #475569; font-size: 0.8rem; }
+        td { padding: 10px 8px; border-bottom: 1px solid #f1f5f9; text-align: center; font-size: 0.85rem; }
 
-    .schedule-container {
-        max-height: 450px;
-        overflow-y: auto;
-        font-size: 0.85rem;
-    }
-    table { width: 100%; border-collapse: collapse; }
-    th { position: sticky; top: 0; background: #f8fafc; padding: 12px 8px; border-bottom: 2px solid #e2e8f0; z-index: 10; color: #475569; }
-    td { padding: 10px 8px; border-bottom: 1px solid #f1f5f9; text-align: center; }
+        .comparison-box {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px dashed #c48c3d;
+            border-radius: 16px;
+            padding: 15px;
+            margin-top: 12px;
+        }
 
-    .weight-bold { font-weight: 700; }
+        .legal-footer {
+            margin-top: auto;
+            padding: 24px 0;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.7rem;
+            line-height: 1.6;
+        }
 
-    .comparison-box {
-        background: rgba(30, 41, 59, 0.5);
-        border: 1px dashed #c48c3d;
-        border-radius: 16px;
-        padding: 15px;
-        margin-top: 15px;
-    }
-
-    .legal-footer {
-        margin-top: 30px;
-        padding: 20px;
-        text-align: center;
-        color: #64748b;
-        font-size: 0.7rem;
-        line-height: 1.6;
-        border-top: 1px solid #334155;
-    }
-    
-    .schedule-container::-webkit-scrollbar { width: 4px; }
-    .schedule-container::-webkit-scrollbar-track { background: #f1f1f1; }
-    .schedule-container::-webkit-scrollbar-thumb { background: #c48c3d; border-radius: 10px; }
-
-    .balloon-row td {
-        background: #fef9f0;
-        font-weight: 700;
-        color: #92400e;
-    }
-</style>
-```
-
+        .balloon-row td {
+            background: #fef9f0;
+            font-weight: 700;
+            color: #92400e;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
 
-```
-    <!-- Logo -->
+<div class="app-shell">
+    <!-- Logo SVG -->
     <div class="logo-container">
         <svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 301.68 65.71">
             <defs>
@@ -257,7 +247,7 @@
         </div>
     </div>
 
-    <!-- Interest Section -->
+    <!-- Interest Row -->
     <div id="standardInterestRow" class="card mb-3">
         <span class="input-label">ריבית נקובה (%)</span>
         <input type="number" id="interestRate" step="0.1" value="4.4" inputmode="decimal" class="value-display text-yellow-500" oninput="calculate()">
@@ -274,7 +264,7 @@
         </div>
     </div>
 
-    <!-- Inflation Section -->
+    <!-- Inflation Toggle -->
     <div id="inflationSection" class="card border border-yellow-800/30 bg-[#1e293b]/50 mb-3">
         <div class="flex justify-between items-center mb-3">
             <label class="switch">
@@ -285,30 +275,30 @@
         </div>
         <div class="flex items-center bg-[#0f172a] rounded-lg p-3 border border-slate-700">
             <span class="text-yellow-500 font-bold ml-2">%</span>
-            <input type="number" id="inflationRate" value="2.0" step="0.1" inputmode="decimal" class="text-right flex-1 bg-transparent text-lg" oninput="calculate()">
+            <input type="number" id="inflationRate" value="2.0" step="0.1" inputmode="decimal" class="text-right flex-1 bg-transparent text-lg text-white" oninput="calculate()">
             <span class="text-slate-400 text-xs mr-4">שיעור אינפלציה שנתית</span>
         </div>
     </div>
 
-    <!-- Monthly Results -->
+    <!-- Result Cards -->
     <div class="grid grid-cols-1 gap-3 mb-3">
         <div class="card highlight-card shadow-xl">
             <div class="text-xs opacity-90 mb-1">החזר חודשי ראשוני</div>
-            <div class="text-4xl weight-bold">
+            <div class="text-4xl font-bold">
                 <span id="monthlyPayment">0</span>
                 <span class="text-2xl mr-1">₪</span>
             </div>
         </div>
         <div id="lastPmtCard" class="card border border-yellow-500/20 bg-slate-800/40">
             <div class="text-xs text-slate-400 mb-1">החזר חודשי אחרון (משוער)</div>
-            <div class="text-2xl weight-bold text-yellow-500">
+            <div class="text-2xl font-bold text-yellow-500">
                 <span id="lastPayment">0</span>
                 <span class="text-lg mr-1">₪</span>
             </div>
         </div>
     </div>
 
-    <!-- Comparison Calculator (Only for Index-Linked) -->
+    <!-- Comparison -->
     <div id="comparisonBox" class="comparison-box">
         <div class="text-xs text-slate-400 mb-2 font-bold uppercase tracking-wider">סימולטור השוואת חלופות (צמוד מול פריים)</div>
         <div class="bg-black/20 p-3 rounded-lg border border-white/5 text-sm leading-relaxed">
@@ -321,35 +311,32 @@
         </div>
     </div>
 
-    <!-- Bottom Stats Panel -->
+    <!-- Analysis/Schedule Panel -->
     <div class="bg-white rounded-[28px] p-5 mt-4 text-slate-800 shadow-2xl">
-        <!-- Tabs -->
         <div class="flex bg-slate-100 rounded-xl p-1 mb-4">
             <div id="tabData" class="tab-btn tab-active" onclick="switchTab('data')">ניתוח נתונים</div>
             <div id="tabSchedule" class="tab-btn tab-inactive" onclick="switchTab('schedule')">לוח סילוקין</div>
         </div>
 
-        <!-- Analysis Content -->
         <div id="analysisContent" class="space-y-4">
             <div class="grid grid-cols-2 gap-3" id="analysisGrid">
                 <div id="interestDisplayBox" class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
                     <div class="text-slate-400 text-[10px] uppercase font-bold mb-1">סה"כ ריבית</div>
-                    <div class="weight-bold text-xl">₪<span id="totalInterest">0</span></div>
+                    <div class="font-bold text-xl">₪<span id="totalInterest">0</span></div>
                 </div>
                 <div id="linkageDisplayBox" class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
                     <div class="text-slate-400 text-[10px] uppercase font-bold mb-1">סה"כ הצמדה</div>
-                    <div class="weight-bold text-xl text-yellow-600">₪<span id="totalLinkage">0</span></div>
+                    <div class="font-bold text-xl text-yellow-600">₪<span id="totalLinkage">0</span></div>
                 </div>
             </div>
 
             <div class="bg-slate-900 text-white rounded-2xl p-5 text-center shadow-inner">
                 <div id="costDescription" class="text-slate-400 text-[10px] uppercase mb-1">עלות ההלוואה הכוללת</div>
-                <div class="text-3xl weight-bold mb-1">₪<span id="totalLoanCost">0</span></div>
-                <div class="text-yellow-500/90 text-xs mt-2 font-medium">עלות נוספת מעבר לקרן: <span id="extraCost" class="weight-bold">0</span> ₪</div>
+                <div class="text-3xl font-bold mb-1">₪<span id="totalLoanCost">0</span></div>
+                <div class="text-yellow-500/90 text-xs mt-2 font-medium">עלות נוספת מעבר לקרן: <span id="extraCost" class="font-bold">0</span> ₪</div>
             </div>
         </div>
 
-        <!-- Schedule Content -->
         <div id="scheduleContent" class="hidden-row schedule-container">
             <table id="scheduleTable">
                 <thead>
@@ -369,11 +356,9 @@
     <!-- Legal Footer -->
     <div class="legal-footer">
         <div class="font-bold text-slate-500 mb-1">הבהרה משפטית:</div>
-        <div>הנתונים המופקים במחשבון זה הינם הערכה בלבד ומבוססים על שיטת שפיצר או הלוואת בלון. התוצאות הסופיות עשויות להשתנות בהתאם לתאריכי הביצוע המדויקים, עמלות והחלטות הבנקים והגופים המממנים.</div>
-        <div class="mt-3 text-slate-500">לשימוש פנימי בלבד של חברת קרדיבל פלוס בע״מ. סימולציה זו להמחשה בלבד ואינה מהווה הצעה רשמית או מחייבת.</div>
-        <div class="mt-2 font-bold text-slate-400">כל הזכויות שמורות לקרדיבל פלוס בע״מ ©</div>
+        <div>הנתונים הינם הערכה בלבד ומבוססים על שיטת שפיצר או הלוואת בלון.</div>
+        <div class="mt-3 text-slate-500">לשימוש פנימי של קרדיבל פלוס בע״מ. ©</div>
     </div>
-
 </div>
 
 <script>
@@ -441,46 +426,16 @@
         }
     }
 
-    /**
-     * Computes the full amortization schedule for:
-     *   - Spitzer on the amortizing portion (P - balloon)
-     *   - Interest-only (grace) on the balloon each month
-     *   - Balloon principal repaid at end of term
-     *   - Index linkage applied monthly to outstanding balance (index route)
-     *
-     * For INDEX route:
-     *   - Base nominal rate r = interestRate / 12
-     *   - Each month the entire outstanding balance (amortizing + balloon) grows by monthly inflation
-     *   - Interest is charged on the inflation-adjusted balance
-     *   - The Spitzer payment on the amortizing portion is recalculated on the inflated balance
-     *     (equivalent: the nominal Spitzer pmt * cumulative inflation factor)
-     *
-     * For PRIME route:
-     *   - Flat nominal rate = primeBase + primeMargin
-     *   - Spitzer on amortizing portion + interest-only on balloon
-     *   - No inflation, no linkage
-     */
     function buildSchedule(p, balloon, n, annualRate, inflationAnnual, applyInflation) {
         const amortP = p - balloon;
-        const r = (annualRate / 100) / 12;                          // monthly nominal rate
-        const inf = applyInflation ? (inflationAnnual / 100) / 12 : 0; // monthly inflation
+        const r = (annualRate / 100) / 12;
+        const inf = applyInflation ? (inflationAnnual / 100) / 12 : 0;
 
-        // Spitzer payment on amortizing portion (in original terms, month-0 prices)
-        let baseAmortPmt = 0;
-        if (r > 0) {
-            baseAmortPmt = (amortP * r) / (1 - Math.pow(1 + r, -n));
-        } else {
-            baseAmortPmt = amortP / n;
-        }
-
-        // Interest-only on balloon (original terms)
+        let baseAmortPmt = r > 0 ? (amortP * r) / (1 - Math.pow(1 + r, -n)) : amortP / n;
         const baseBalInterest = balloon * r;
 
-        // Base monthly payment (original terms)
-        const basePmt = baseAmortPmt + baseBalInterest;
-
-        let amortBalance = amortP;   // outstanding amortizing balance (nominal, pre-inflation)
-        let balloonBalance = balloon; // outstanding balloon (nominal, pre-inflation)
+        let amortBalance = amortP;
+        let balloonBalance = balloon;
         let cumulativeInflation = 1;
 
         let schedule = [];
@@ -488,9 +443,7 @@
         let totalLinkage = 0;
 
         for (let i = 1; i <= n; i++) {
-            // --- Apply inflation linkage to both balances ---
-            let amortLinkage = 0;
-            let ballLinkage = 0;
+            let amortLinkage = 0, ballLinkage = 0;
             if (inf > 0) {
                 amortLinkage = amortBalance * inf;
                 ballLinkage = balloonBalance * inf;
@@ -501,95 +454,59 @@
             const monthLinkage = amortLinkage + ballLinkage;
             totalLinkage += monthLinkage;
 
-            // --- Interest on inflation-adjusted balances ---
             const amortInterest = amortBalance * r;
             const ballInterest = balloonBalance * r;
             const monthInterest = amortInterest + ballInterest;
             totalInterest += monthInterest;
 
-            // --- Payment this month ---
-            // Nominal Spitzer pmt scaled by cumulative inflation + balloon interest
             const scaledAmortPmt = baseAmortPmt * cumulativeInflation;
-            const scaledBallInterest = balloonBalance * r; // same as ballInterest
-            let monthPmt = scaledAmortPmt + scaledBallInterest;
-
-            // Principal repaid on amortizing portion
+            let monthPmt = scaledAmortPmt + ballInterest;
             let amortPrincipal = scaledAmortPmt - amortInterest;
 
-            // Safety: clamp to balance (rounding)
             if (amortPrincipal > amortBalance) amortPrincipal = amortBalance;
-
             amortBalance -= amortPrincipal;
 
-            // On last payment: repay remaining amortizing balance + balloon
             let extraBalloon = 0;
             if (i === n) {
-                // Repay any residual on amortizing portion
                 if (amortBalance > 0.01) {
                     amortPrincipal += amortBalance;
                     monthPmt += amortBalance;
                     amortBalance = 0;
                 }
-                // Repay balloon
                 extraBalloon = balloonBalance;
                 monthPmt += balloonBalance;
                 balloonBalance = 0;
             }
-
-            const totalPrincipal = amortPrincipal + extraBalloon;
-            const totalBalance = amortBalance + balloonBalance;
 
             schedule.push({
                 month: i,
                 payment: monthPmt,
                 interest: monthInterest,
                 linkage: monthLinkage,
-                principal: totalPrincipal,
-                balance: Math.max(0, totalBalance),
+                principal: amortPrincipal + extraBalloon,
+                balance: Math.max(0, amortBalance + balloonBalance),
                 isBalloonMonth: i === n && extraBalloon > 0
             });
         }
-
         return { schedule, totalInterest, totalLinkage };
     }
 
-    /**
-     * Find the prime margin such that total extra cost (interest only, no linkage)
-     * equals the index route's total extra cost (interest + linkage).
-     * Uses binary search.
-     */
     function findBreakEvenMargin(p, balloon, n, nominalRate, inflationAnnual, applyInflation, primeBase) {
-        // Compute index route total extra cost
-        const { totalInterest: idxInt, totalLinkage: idxLink } = buildSchedule(
-            p, balloon, n, nominalRate, inflationAnnual, applyInflation
-        );
+        const { totalInterest: idxInt, totalLinkage: idxLink } = buildSchedule(p, balloon, n, nominalRate, inflationAnnual, applyInflation);
         const indexExtraCost = idxInt + idxLink;
 
-        // Binary search for prime margin
-        let lo = -primeBase;  // minimum so total rate >= 0
-        let hi = 30;
+        let lo = -primeBase, hi = 30;
         for (let iter = 0; iter < 60; iter++) {
             const mid = (lo + hi) / 2;
-            const totalPrimeRate = primeBase + mid;
-            if (totalPrimeRate < 0) { lo = mid; continue; }
-            const { totalInterest: primeInt } = buildSchedule(
-                p, balloon, n, totalPrimeRate, 0, false
-            );
-            if (primeInt < indexExtraCost) {
-                lo = mid;
-            } else {
-                hi = mid;
-            }
+            const { totalInterest: primeInt } = buildSchedule(p, balloon, n, primeBase + mid, 0, false);
+            if (primeInt < indexExtraCost) lo = mid; else hi = mid;
         }
         return (lo + hi) / 2;
     }
 
     function calculate() {
-        const pStr = document.getElementById('loanAmount').value.replace(/,/g, '');
-        const balloonStr = document.getElementById('balloonAmount').value.replace(/,/g, '');
-
-        const p = parseFloat(pStr) || 0;
-        const balloon = parseFloat(balloonStr) || 0;
+        const p = parseFloat(document.getElementById('loanAmount').value.replace(/,/g, '')) || 0;
+        const balloon = parseFloat(document.getElementById('balloonAmount').value.replace(/,/g, '')) || 0;
         const n = parseFloat(document.getElementById('period').value) || 0;
         const inflationRateVal = parseFloat(document.getElementById('inflationRate').value) || 0;
         const inflationActive = document.getElementById('inflationActive').checked;
@@ -597,75 +514,45 @@
 
         if (n <= 0 || p <= 0) return;
 
-        let annualRate = 0;
-        if (currentRoute === 'מדד') {
-            annualRate = parseFloat(document.getElementById('interestRate').value) || 0;
-        } else {
-            const margin = parseFloat(document.getElementById('primeMargin').value) || 0;
-            annualRate = primeBaseVal + margin;
-        }
+        let annualRate = (currentRoute === 'מדד') 
+            ? parseFloat(document.getElementById('interestRate').value) || 0
+            : primeBaseVal + (parseFloat(document.getElementById('primeMargin').value) || 0);
 
         const applyInflation = currentRoute === 'מדד' && inflationActive;
+        const { schedule, totalInterest, totalLinkage } = buildSchedule(p, balloon, n, annualRate, inflationRateVal, applyInflation);
 
-        const { schedule, totalInterest, totalLinkage } = buildSchedule(
-            p, balloon, n, annualRate, inflationRateVal, applyInflation
-        );
-
-        const totalCost = p + totalInterest + totalLinkage;
-        const extraCost = totalInterest + totalLinkage;
-
-        // Update comparison box for index route
-        if (currentRoute === 'מדד') {
-            const nominalRate = parseFloat(document.getElementById('interestRate').value) || 0;
-            document.getElementById('compInt').innerText = nominalRate.toFixed(1);
-            if (inflationActive) {
-                document.getElementById('compInfLabel').style.display = 'inline';
-                document.getElementById('compInf').innerText = inflationRateVal.toFixed(1);
-            } else {
-                document.getElementById('compInfLabel').style.display = 'none';
-            }
-
-            // Find true break-even prime margin via simulation
-            const beMargin = findBreakEvenMargin(p, balloon, n, nominalRate, inflationRateVal, applyInflation, primeBaseVal);
-            const sign = beMargin >= 0 ? "+" : "";
-            document.getElementById('primeEquivalent').innerText = `${sign}${beMargin.toFixed(2)}`;
-        }
-
-        const firstPmt = schedule[0].payment;
-        const lastPmt = schedule[n - 1].payment;
-
-        document.getElementById('monthlyPayment').innerText = Math.round(firstPmt).toLocaleString();
-        document.getElementById('lastPayment').innerText = Math.round(lastPmt).toLocaleString();
+        document.getElementById('monthlyPayment').innerText = Math.round(schedule[0].payment).toLocaleString();
+        document.getElementById('lastPayment').innerText = Math.round(schedule[n - 1].payment).toLocaleString();
         document.getElementById('totalInterest').innerText = Math.round(totalInterest).toLocaleString();
         document.getElementById('totalLinkage').innerText = Math.round(totalLinkage).toLocaleString();
-        document.getElementById('totalLoanCost').innerText = Math.round(totalCost).toLocaleString();
-        document.getElementById('extraCost').innerText = Math.round(extraCost).toLocaleString();
+        document.getElementById('totalLoanCost').innerText = Math.round(p + totalInterest + totalLinkage).toLocaleString();
+        document.getElementById('extraCost').innerText = Math.round(totalInterest + totalLinkage).toLocaleString();
+
+        if (currentRoute === 'מדד') {
+            document.getElementById('compInt').innerText = annualRate.toFixed(1);
+            document.getElementById('compInfLabel').style.display = inflationActive ? 'inline' : 'none';
+            if (inflationActive) document.getElementById('compInf').innerText = inflationRateVal.toFixed(1);
+            const beMargin = findBreakEvenMargin(p, balloon, n, annualRate, inflationRateVal, applyInflation, primeBaseVal);
+            document.getElementById('primeEquivalent').innerText = `${beMargin >= 0 ? "+" : ""}${beMargin.toFixed(2)}`;
+        }
 
         window.currentSchedule = schedule;
-
-        // Refresh schedule if visible
-        if (!document.getElementById('scheduleContent').classList.contains('hidden-row')) {
-            generateSchedule();
-        }
+        if (!document.getElementById('scheduleContent').classList.contains('hidden-row')) generateSchedule();
     }
 
     function generateSchedule() {
         const body = document.getElementById('scheduleBody');
         body.innerHTML = '';
         if (!window.currentSchedule) return;
-
         window.currentSchedule.forEach(row => {
             const tr = document.createElement('tr');
-            tr.className = row.isBalloonMonth
-                ? 'balloon-row'
-                : 'hover:bg-slate-50 transition-colors';
-
+            if (row.isBalloonMonth) tr.className = 'balloon-row';
             tr.innerHTML = `
-                <td class="text-slate-400 font-medium">${row.month}${row.isBalloonMonth ? ' 🎈' : ''}</td>
-                <td class="weight-bold text-slate-900">₪${Math.round(row.payment).toLocaleString()}</td>
+                <td>${row.month}${row.isBalloonMonth ? ' 🎈' : ''}</td>
+                <td class="font-bold">₪${Math.round(row.payment).toLocaleString()}</td>
                 <td>₪${Math.round(row.interest).toLocaleString()}</td>
                 <td>₪${Math.round(row.principal).toLocaleString()}</td>
-                <td class="text-slate-400">₪${Math.round(row.balance).toLocaleString()}</td>
+                <td>₪${Math.round(row.balance).toLocaleString()}</td>
             `;
             body.appendChild(tr);
         });
@@ -673,7 +560,6 @@
 
     window.onload = calculate;
 </script>
-```
 
 </body>
 </html>
