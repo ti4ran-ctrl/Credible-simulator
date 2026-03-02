@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מחשבון הלוואה וליווי אשראי</title>
+    <title>מחשבון הלוואה וליווי אשראי | קרדיבל פלוס</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -20,6 +20,7 @@
             width: 100%;
             max-width: 450px;
             padding: 16px;
+            padding-bottom: 40px;
         }
         .card {
             background-color: #1e293b;
@@ -37,7 +38,6 @@
         }
         .value-display {
             font-size: 1.4rem;
-            /* הוסר Bold משדות ההזנה */
             font-weight: 400; 
         }
         .highlight-card {
@@ -121,6 +121,16 @@
 
         .weight-normal { font-weight: 400; }
         .weight-bold { font-weight: 700; }
+
+        .legal-footer {
+            margin-top: 24px;
+            padding: 16px;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.75rem;
+            line-height: 1.5;
+            border-top: 1px solid #334155;
+        }
     </style>
 </head>
 <body>
@@ -209,12 +219,10 @@
         </div>
 
         <div id="primeInterestRow" class="grid grid-cols-2 gap-3 mb-3 hidden-row">
-            <!-- בסיס פריים עבר להיות ראשון -->
             <div class="card">
                 <span class="input-label">בסיס פריים (%)</span>
                 <input type="number" id="primeBase" step="0.1" value="5.5" inputmode="decimal" class="value-display text-yellow-500" oninput="calculate()">
             </div>
-            <!-- מרווח עבר להיות שני -->
             <div class="card">
                 <span class="input-label">מרווח (%)</span>
                 <input type="number" id="primeMargin" step="0.1" value="1.7" inputmode="decimal" class="value-display text-yellow-500" oninput="calculate()">
@@ -299,14 +307,21 @@
                 </table>
             </div>
         </div>
+
+        <!-- Legal Footer -->
+        <div class="legal-footer">
+            <div>* מחשבון ההלוואה הוא כלי עזר אינפורמטיבי בלבד ואינו מהווה הצעה מחייבת</div>
+            <div>* לצורך שימוש פנימי בלבד של קרדיבל פלוס בע״מ</div>
+            <div class="mt-1 weight-bold">כל הזכויות שמורות לקרדיבל פלוס בע״מ ©</div>
+        </div>
+
     </div>
 
     <script>
         let currentRoute = 'מדד'; 
 
-        // פונקציה לעיצוב שדות הזנה עם פסיקים
         function formatNumberInput(input) {
-            let value = input.value.replace(/\D/g, ''); // מסיר כל תו שאינו מספר
+            let value = input.value.replace(/\D/g, ''); 
             if (value === '') {
                 input.value = '';
                 return;
@@ -332,7 +347,6 @@
                 standardInt.classList.add('hidden-row');
                 primeInt.classList.remove('hidden-row');
                 linkageBox.classList.add('hidden-row');
-                // הרחבת תא הריבית לרוחב מלא
                 interestBox.classList.add('col-span-2');
                 costDesc.innerText = 'עלות ההלוואה הכוללת (קרן + ריבית)';
             } else {
@@ -342,7 +356,6 @@
                 standardInt.classList.remove('hidden-row');
                 primeInt.classList.add('hidden-row');
                 linkageBox.classList.remove('hidden-row');
-                // החזרת תא הריבית לחצי רוחב
                 interestBox.classList.remove('col-span-2');
                 costDesc.innerText = 'עלות ההלוואה הכוללת (קרן + ריבית + הצמדה)';
             }
@@ -370,7 +383,6 @@
         }
 
         function calculate() {
-            // שליפת המספרים הנקיים ללא פסיקים
             const pStr = document.getElementById('loanAmount').value.replace(/,/g, '');
             const balloonStr = document.getElementById('balloonAmount').value.replace(/,/g, '');
             
@@ -414,9 +426,7 @@
             for (let i = 1; i <= n; i++) {
                 let interestPart = currentBalance * monthlyRate;
                 let currentPmt = pmt + (balloon * monthlyRate);
-                let principalPart = currentPmt - (p - balloon) * (monthlyRate / (1 - Math.pow(1+monthlyRate, -n))) + (p-balloon) * (monthlyRate / (1 - Math.pow(1+monthlyRate, -n))) - interestPart;
-                
-                principalPart = currentPmt - interestPart;
+                let principalPart = currentPmt - interestPart;
 
                 if (inflationActive) {
                     const linkageMonth = currentBalance * monthlyInflation;
@@ -440,7 +450,6 @@
 
             const totalCost = p + totalInterestPaid + totalLinkagePaid;
 
-            // עדכון השדות תוך שמירה על עיצוב מספרים עם פסיקים מפרידים
             document.getElementById('monthlyPayment').innerText = Math.round(initialMonthlyPmt).toLocaleString();
             document.getElementById('lastPayment').innerText = Math.round(lastPmtValue).toLocaleString();
             document.getElementById('totalInterest').innerText = Math.round(totalInterestPaid).toLocaleString();
