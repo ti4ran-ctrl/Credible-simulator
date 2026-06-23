@@ -228,11 +228,11 @@
     <div class="grid grid-cols-2 gap-3 mb-3">
         <div class="card">
             <span class="input-label">סכום המימון</span>
-            <input type="text" id="loanAmount" value="100,000" inputmode="numeric" class="value-display" oninput="formatNumberInput(this); calculate()">
+            <input type="text" id="loanAmount" value="0" inputmode="numeric" class="value-display" oninput="formatNumberInput(this); calculate()">
         </div>
         <div class="card">
             <span class="input-label">סכום הבלון</span>
-            <input type="text" id="balloonAmount" value="50,000" inputmode="numeric" class="value-display" oninput="formatNumberInput(this); calculate()">
+            <input type="text" id="balloonAmount" value="0" inputmode="numeric" class="value-display" oninput="formatNumberInput(this); calculate()">
         </div>
         <div class="card">
             <span class="input-label">תקופה (חודשים)</span>
@@ -256,7 +256,7 @@
     <div id="primeInterestRow" class="grid grid-cols-2 gap-3 mb-3 hidden-row">
         <div class="card">
             <span class="input-label">בסיס פריים (%)</span>
-            <input type="number" id="primeBase" step="0.1" value="5.5" inputmode="decimal" class="value-display text-yellow-500" oninput="calculate()">
+            <input type="number" id="primeBase" step="0.1" value="5.25" inputmode="decimal" class="value-display text-yellow-500" oninput="calculate()">
         </div>
         <div class="card">
             <span class="input-label">מרווח (%)</span>
